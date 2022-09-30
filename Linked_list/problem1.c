@@ -16,14 +16,14 @@ doubly linked list
 
 typedef struct Node
 {
-    struct Node* prev;
-    char data;
-    struct Node* next;
+    struct Node* prev; // 이전 노드를 가리키는 포인터
+    char data; // 영문자 데이터
+    struct Node* next; // 다음 노드를 가리키는 포인터
 } Node;
 
-Node* head;
-Node* tail;
-int count;
+Node* head; // header
+Node* tail; // trailer
+int count; // 전체 노드 수
 
 Node* makenode(char);
 void init();
@@ -34,9 +34,9 @@ void print();
 
 int main()
 {
-    int n;
+    int n; // 연산 수
     int position; 
-    char mode;
+    char mode; // 연산 종류
     char data;
 
     init();
@@ -50,26 +50,25 @@ int main()
         getchar();
         switch(mode)
         {
-            case 'A':
+            case 'A': // add(list, position, item) 
                 scanf("%d %c", &position, &data);
-                // printf("%d %c\n", position, data);
                 add(position, data);
                 getchar();
                 break;
 
-            case 'D':
+            case 'D': // delete(list, position)
                 scanf("%d", &position);
                 delete(position);
                 getchar();
                 break;
 
-            case 'G':
+            case 'G': // get(list, position)
                 scanf("%d", &position);
                 get(position);
                 getchar();
                 break;
 
-            case 'P':
+            case 'P': // print(list)
                 print();
                 break;
         }
@@ -77,6 +76,8 @@ int main()
     }
 
     Node* node = head;
+
+    // 동적 할당 해제
     for (int i = 0; i < count; i++)
     {
         free(node);
@@ -86,6 +87,12 @@ int main()
     return 0;
 }
 
+/**
+ * @brief 노드를 생성합니다
+ *  
+ * @param data 영문자 데이터인 char형 변수입니다.
+ * @return Node* 노드 포인터를 반환합니다.
+ */
 Node* makenode(char data)
 {
     Node *node = (Node*)malloc(sizeof(Node));
@@ -96,6 +103,10 @@ Node* makenode(char data)
     return node;    
 }
 
+/**
+ * @brief 영문자 ADT(이중연결리스트) 생성을 위해 header와 trailer를 초기화합니다.
+ * 
+ */
 void init()
 {
     head = (Node*)malloc(sizeof(Node));
@@ -104,13 +115,20 @@ void init()
     tail->data = '\0';
 
     head->next = tail;
-    head->prev = head;
+    head->prev = head; // add 함수 사용 시, 오류 발생을 막기 위해 자기 자신을 가리키도록 설정하였습니다.
     tail->next = tail;
     tail->prev = head;    
 }
 
+/**
+ * @brief 영문자 데이터 추가 함수입니다. 
+ * 
+ * @param position 데이터 추가 위치입니다.
+ * @param data 영문자 데이터입니다.
+ */
 void add(int position, char data)
 {
+    // 잘못된 position 입력 시
     if (position - 1 > count)
     {
         printf("invalid position\n");
@@ -126,13 +144,18 @@ void add(int position, char data)
     
     new->prev = n;
     new->next = n->next;
-    n->next->prev = new;
+    n->next->prev = new; 
     n->next = new;
 
     count++;
 
 }
 
+/**
+ * @brief 영문자 데이터를 삭제하는 함수입니다.
+ * 
+ * @param position 삭제할 데이터의 위치입니다.
+ */
 void delete(int position)
 {
     if (position > count)
@@ -155,6 +178,11 @@ void delete(int position)
     count--;
 }
 
+/**
+ * @brief position 번째에 위치한 영문자 데이터 값을 출력합니다.
+ * 
+ * @param position 출력할 데이터의 위치입니다.
+ */
 void get(int position)
 {
     if (position > count)
@@ -172,6 +200,10 @@ void get(int position)
     printf("%c\n", n->data);
 }
 
+/**
+ * @brief 영문자 ADT를 출력하는 함수입니다.
+ * 
+ */
 void print()
 {
     Node* n;
